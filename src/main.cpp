@@ -32,22 +32,21 @@ class $modify(MyLevelInfoLayer, LevelInfoLayer) {
         return true;
     }
 
-    void onCloneExactLevel(CCObject* sender) {
-        // Obtenemos el nivel actual de la capa original
+        void onCloneExactLevel(CCObject* sender) {
         GJGameLevel* currentLevel = m_level;
         if (!currentLevel) return;
 
         auto levelManager = LocalLevelManager::sharedState();
         if (!levelManager) return;
 
-        // 1. Creamos un nuevo objeto de nivel local en blanco
-        GJGameLevel* clonedLevel = levelManager->createNewLevel();
+        // CORRECCIÓN 1: Instanciar el nivel usando create() en lugar de un método de levelManager
+        GJGameLevel* clonedLevel = GJGameLevel::create();
         if (!clonedLevel) {
             FLAlertLayer::create("Error", "No se pudo crear el nivel local.", "OK")->show();
             return;
         }
 
-        // 2. Copiamos las estructuras esenciales de datos (el mapa/diseño)
+        // Copiamos las estructuras esenciales de datos
         clonedLevel->m_levelString = currentLevel->m_levelString;
         clonedLevel->m_levelName = currentLevel->m_levelName;
         clonedLevel->m_levelDesc = currentLevel->m_levelDesc;
@@ -55,25 +54,29 @@ class $modify(MyLevelInfoLayer, LevelInfoLayer) {
         clonedLevel->m_audioTrack = currentLevel->m_audioTrack;
         clonedLevel->m_songID = currentLevel->m_songID;
 
-        // 3. Forzamos la preservación exacta de los metadatos solicitados
-        clonedLevel->m_levelID = currentLevel->m_levelID;       // ID del nivel online original
-        clonedLevel->m_levelVersion = currentLevel->m_levelVersion; // Versión del nivel
-        clonedLevel->m_accountID = currentLevel->m_accountID;   // ID de cuenta del creador
-        clonedLevel->m_userID = currentLevel->m_userID;         // ID de usuario del creador
-        clonedLevel->m_password = currentLevel->m_password;     // Contraseña (si posee)
-        clonedLevel->m_originalLevel = currentLevel->m_originalLevel; // ID original del nivel (si es un reupload)
+        // Forzamos la preservación exacta de los metadatos solicitados
+        clonedLevel->m_levelID = currentLevel->m_levelID;       
+        clonedLevel->m_levelVersion = currentLevel->m_levelVersion; 
+        clonedLevel->m_accountID = currentLevel->m_accountID;   
+        clonedLevel->m_userID = currentLevel->m_userID;         
+        clonedLevel->m_password = currentLevel->m_password;     
+        clonedLevel->m_originalLevel = currentLevel->m_originalLevel; 
         
-        // Configuramos propiedades de guardado local para que el juego lo reconozca
-        clonedLevel->m_levelType = GJLevelType::Local;
+        // CORRECCIÓN 2: El enum correcto en el código moderno es 'Editor' para tus niveles locales
+        clonedLevel->m_levelType = GJLevelType::Editor;
 
-        // 4. Guardamos los cambios inmediatamente en el gestor local del juego
+        // Agregamos el nivel creado al arreglo de niveles locales
+        auto localLevels = levelManager->m_localLevels;
+        if (localLevels) {
+            localLevels->insertObject(clonedLevel, 0); // Insertar al inicio de la lista
+        }
+
+        // Guardamos los cambios en el gestor local
         levelManager->updateLevelOrder();
         
-        // Notificación de éxito en pantalla
         FLAlertLayer::create(
             "Éxito", 
-            "Nivel clonado con <cg>todos sus metadatos originales</c>. Revisa tus Saved Levels.", 
+            "Nivel clonado con <cg>todos sus metadatos originales</c>. Revisa tus Saved/Local Levels.", 
             "OK"
         )->show();
-    }
-};
+}
