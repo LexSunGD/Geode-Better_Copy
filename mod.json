@@ -14,4 +14,10 @@
 	"repository": "github.com",
 	"tags": [],
 	"settings": {}
+	"dependencies": {
+		"geode.node-ids": {
+			"version": "v1.23.3",
+			"importance": "required"
+		}
+	}
 }
