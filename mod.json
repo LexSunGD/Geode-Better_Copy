@@ -10,14 +10,9 @@
 	"version": "1.0.0",
 	"name": "Better Copy",
 	"developer": "LexSunGD",
-	"description": "description.",
+	"description": "asdf.",
 	"repository": "github.com",
 	"tags": [],
 	"settings": {},
-	"dependencies": {
-		"geode.node-ids": {
-			"version": "v1.23.3",
-			"importance": "required"
-		}
 	}
-}
+
