@@ -65,8 +65,8 @@ class $modify(MyLevelInfoLayer, LevelInfoLayer) {
         levelManager->updateLevelOrder();
         
         FLAlertLayer::create(
-            "Éxito", 
-            "Nivel clonado con <cg>todos sus metadatos originales</c>. Revisa tus Saved/Local Levels.", 
+            "Level Cloned", 
+            "A copy of this level has been created in your local <cg>levels</c>. <cg>todos sus metadatos originales</c>.", 
             "OK"
         )->show();
     }
