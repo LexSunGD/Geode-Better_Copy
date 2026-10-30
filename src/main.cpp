@@ -7,12 +7,14 @@ class $modify(MyLevelInfoLayer, LevelInfoLayer) {
     bool init(GJGameLevel* level, bool isGauntlet) {
         if (!LevelInfoLayer::init(level, isGauntlet)) return false;
 
-        auto rightMenu = this->getChildByID("right-side-menu");
-        if (!rightMenu) return true; 
+        auto leftMenu = this->getChildByID("left-side-menu");
+        if (!leftMenu) return true; 
 
         auto btnSprite = CCSprite::createWithSpriteFrameName("GJ_duplicateBtn_001.png");
         if (!btnSprite) {
             btnSprite = ButtonSprite::create("Clonar Exacto");
+        } else {
+            btnSprite->setColor(ccColor3B{0, 150, 255});
         }
 
         auto copyBtn = CCMenuItemSpriteExtra::create(
@@ -22,8 +24,8 @@ class $modify(MyLevelInfoLayer, LevelInfoLayer) {
         );
         copyBtn->setID("exact-copy-button");
 
-        rightMenu->addChild(copyBtn);
-        rightMenu->updateLayout();
+        leftMenu->addChild(copyBtn);
+        leftMenu->updateLayout();
 
         return true;
     }
@@ -53,7 +55,6 @@ class $modify(MyLevelInfoLayer, LevelInfoLayer) {
         clonedLevel->m_accountID = currentLevel->m_accountID;   
         clonedLevel->m_userID = currentLevel->m_userID;         
         clonedLevel->m_password = currentLevel->m_password;     
-        clonedLevel->m_originalLevel = currentLevel->m_originalLevel; 
         
         clonedLevel->m_levelType = GJLevelType::Editor;
 
@@ -66,7 +67,7 @@ class $modify(MyLevelInfoLayer, LevelInfoLayer) {
         
         FLAlertLayer::create(
             "Level Cloned", 
-            "A copy of this level has been created in your local <cg>levels</c>.", 
+            "A <c:0,150,255>copy</c> of this level has been created in your local <cg>levels</c>.", 
             "OK"
         )->show();
     }
