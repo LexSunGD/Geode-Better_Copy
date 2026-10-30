@@ -45,7 +45,7 @@ jobs:
           combine: true
           target: ${{ matrix.config.target }}
         env:
-          GEODE_GD_VERSION: "2.2091"
+          CMAKE_ARGS: "-DGEODE_GD_VERSION=2.2091"
 
   package:
     name: Package builds
@@ -62,3 +62,4 @@ jobs:
         with:
           name: Build Output
           path: ${{ steps.build.outputs.build-output }}
+        
