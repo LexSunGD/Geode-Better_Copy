@@ -7,13 +7,17 @@ class $modify(MyLevelInfoLayer, LevelInfoLayer) {
     bool init(GJGameLevel* level, bool isGauntlet) {
         if (!LevelInfoLayer::init(level, isGauntlet)) return false;
 
-        auto leftMenu = this->getChildByID("left-side-menu");
-        if (!leftMenu) return true; 
+        // Creamos nuestro propio menú flotante para asegurar que se muestre
+        auto myMenu = CCMenu::create();
+        myMenu->setPosition(ccp(30, 160)); // Ajusta estas coordenadas si prefieres otra posición a la izquierda
+        myMenu->setContentSize(ccp(40, 200));
+        myMenu->setLayout(ColumnLayout::create());
 
         auto btnSprite = CCSprite::createWithSpriteFrameName("GJ_duplicateBtn_001.png");
         if (!btnSprite) {
             btnSprite = ButtonSprite::create("Clonar Exacto");
         } else {
+            // Tinte azul para diferenciarlo
             btnSprite->setColor(ccColor3B{0, 150, 255});
         }
 
@@ -24,8 +28,11 @@ class $modify(MyLevelInfoLayer, LevelInfoLayer) {
         );
         copyBtn->setID("exact-copy-button");
 
-        leftMenu->addChild(copyBtn);
-        leftMenu->updateLayout();
+        myMenu->addChild(copyBtn);
+        myMenu->updateLayout();
+
+        // Añadimos el menú directamente a la capa principal
+        this->addChild(myMenu, 10);
 
         return true;
     }
@@ -54,8 +61,7 @@ class $modify(MyLevelInfoLayer, LevelInfoLayer) {
         clonedLevel->m_levelVersion = currentLevel->m_levelVersion; 
         clonedLevel->m_accountID = currentLevel->m_accountID;   
         clonedLevel->m_userID = currentLevel->m_userID;         
-        clonedLevel->m_password = currentLevel->m_password;     
-        
+        clonedLevel->m_password = currentLevel->m_password;         
         clonedLevel->m_levelType = GJLevelType::Editor;
 
         auto localLevels = levelManager->m_localLevels;
